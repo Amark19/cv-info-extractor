@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <script src="//mozilla.github.io/pdf.js/build/pdf.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <style>
+    /*
+ * Globals
+ */
+
+
+    /* Custom default button */
+    .btn-secondary,
+    .btn-secondary:hover,
+    .btn-secondary:focus {
+      color: #333;
+      text-shadow: none;
+      /* Prevent inheritance from `body` */
+    }
+
+
+    /*
+ * Base structure
+ */
+
+    body {
+      text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
+      background-color: rgb(39, 38, 38);
+      box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+    }
+
+    .input {
+
+      border: 1px solid rgb(38, 35, 35);
+      border-radius: 10px;
+
+    }
+
+    .files input {
+      outline: 2px dashed #92b0b3;
+      outline-offset: -10px;
+      -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+      transition: outline-offset .15s ease-in-out, background-color .15s linear;
+      padding: 120px 0px 85px 35%;
+      text-align: center !important;
+      margin: 0;
+      width: 100% !important;
+    }
+
+    .files input:focus {
+      outline: 2px dashed #92b0b3;
+      outline-offset: -10px;
+      -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+      transition: outline-offset .15s ease-in-out, background-color .15s linear;
+      border: 1px solid #92b0b3;
+    }
+
+    .files {
+      position: relative
+    }
+
+    .files:after {
+      pointer-events: none;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      width: 70px;
+      right: 0;
+      height: 70px;
+      content: "";
+      background-image: url('/static/uploading.png');
+      display: block;
+      margin: 0 auto;
+      background-size: 100%;
+      background-repeat: no-repeat;
+    }
+
+    .color input {
+      background-color: #f1f1f1;
+    }
+
+    .files:before {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      pointer-events: none;
+      width: 100%;
+      right: 0;
+      height: 40px;
+      content: " or drag it here. ";
+      display: block;
+      margin: 0 auto;
+      color: #2ea591;
+      font-weight: 600;
+      text-transform: capitalize;
+      text-align: center;
+    }
+
+    .AddName {
+      background-color: #3671ab;
+    }
+
+    .btn {
+      padding: 0.5rem 1.8rem;
+      border: none;
+      font-size: 1rem;
+      border-radius: 2rem;
+      box-shadow: 0px 8px 6px -6px rgba(0, 0, 0, 0.8);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container main text-light">
+    <main>
+      <div class="py-5 text-center">
+        <img class="d-block mx-auto mb-4" src="/static/pdf-to-txt.png" alt="" width="150" height="80">
+        <h2 class="text-monospace font-weight-bold">CVINFO Extractor</h2>
+        <p class="lead">Just drop your cv's in the format of pdf and in just a seconds filename and Person name will be extracted..</p>
+      </div>
+
+      <div class="row g-5 mb-5">
+        
+        <div class="col-md-7 col-md-order-1 col-lg-8 ">
+          <h4 class="mb-3">Upload</h4>
+          <form action="/" method="POST" enctype="multipart/form-data">
+            <div class="row g-3">
+              <div class="form-group files">
+                <label>Upload Your File </label>
+                <input type="file" class="form-control" accept="application/pdf" multiple="" id='pdf' name="pdf"
+                style="background-color: #1f1e1e;color: white;" required>
+              </div>
+              
+              
+              <hr class="my-4">
+              
+              <button class=" btn btn-primary btn-lg " type="submit">Extract Info</button>
+            </form>
+          </div>
+        </div>
+        <div class="col-md-5 col-lg-4 order-md-last " style="margin-left: -40px;">
+          <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-primary">Your Info</span>
+            <span class="badge bg-primary rounded-pill">{{len}}</span>
+            <p class="mr-0 text-white my-2">filename</p>
+          </h4>
+          <ul class="list-group mb-3 " style="    box-shadow:13px 4px 19px 7px rgb(19 17 17);width: 480px;" id="content-table">
+            
+          </ul>
+          <p class="text-danger" id="warn" style="display: none;">*Not able to extract some files due to their fonts and different designing.</p>
+        </div>
+    </main>
+
+    <footer class=" text-muted text-center text-small">
+      <p class="mb-1 text-light">&copy; 2021 cvInfo extractor</p>
+      <ul class="list-inline">
+      </ul>
+    </footer>
+  </div>
+
+</body>
+<script>
+
+  {% if isdone %}
+  var pdf_content = [],copy_content = [];
+  var x = {{ file_names | tojson}}
+  x = JSON.parse(x)
+  var url = 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/examples/learning/helloworld.pdf';
+  pdfjsLib.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
+  var k;
+  for (var j = 0; j < x.length; j++) {
+    k=-1;
+    pdfjsLib.getDocument(`/static/${x[j]}.pdf`).promise.then(function (pdf) {
+      var pdfDocument = pdf;
+      var pagesPromises = [];
+      var count , matched_words = [];
+      
+      for (var i = 0; i < pdf.numPages; i++) {
+        (function (pageNumber) {
+          pagesPromises.push(getPageText(pageNumber, pdfDocument));
+        })(i + 1);
+      }
+      
+      Promise.all(pagesPromises).then(function (pagesText) {
+        k++;
+        pdf_content.push(pagesText[0].toLowerCase().replace(/\s+/g, ' ').trim().split(" "));
+        if(k==x.length-1){
+        for(var i=0;i<x.length;i++){
+          count=0;
+          for(var l=0;l<3;l++){
+            for(var j=0;j<10;j++){
+              if(x[i].includes(pdf_content[l][j])){
+                matched_words.push([x[i],pdf_content[l][j]]);
+                count+=1;
+              }
+              if(count==1){break;}
+            }
+          if(count==1){break;}
+          }
+        }
+        sethtmlFromRecords(matched_words);
+        }
+        // pdf_content[k] = pagesText[0].toLowerCase().replace(/\s+/g, ' ').trim().split(" ")
+
+      });
+      
+    }, function (reason) {
+      // PDF loading error
+      console.error(reason);
+    });
+    
+  }
+  function getPageText(pageNum, PDFDocumentInstance) {
+    // Return a Promise that is solved once the text of the page is retrieven
+    return new Promise(function (resolve, reject) {
+      PDFDocumentInstance.getPage(pageNum).then(function (pdfPage) {
+        // The main trick to obtain the text of the PDF page, use the getTextContent method
+        pdfPage.getTextContent().then(function (textContent) {
+          var textItems = textContent.items;
+          var finalString = "";
+
+          // Concatenate the string of the item to the final string
+          for (var i = 0; i < textItems.length; i++) {
+            var item = textItems[i];
+
+            finalString += item.str + " ";
+          }
+
+          // Solve promise with the text retrieven from the page
+          resolve(finalString);
+        });
+      });
+    });
+  }
+function sethtmlFromRecords(matched_words){
+  var content;
+  $('#content-table').empty();
+  for(var i=0;i<matched_words.length;i++){
+
+   content= `<li class="list-group-item d-flex text-light justify-content-between lh-sm" style="background-color:#2d2e2f;
+height:auto;" style="width:100px;">
+              <div>
+                <h6 class="my-0 ">${matched_words[i][1]}</h6>
+              </div>
+              <span class="" style="color:#e8c1c1;"><p class="container" style="font-size:1vw;margin-left:-30px;">${matched_words[i][0]}</p></span>
+            </li>`;
+            $('#content-table').append(content);
+}
+if(matched_words.length!={{len}}){
+  document.getElementById('warn').style.display = 'block';
+}
+else{
+  document.getElementById('warn').style.display = 'none';
+}
+
+}
+
+
+  {% endif %}
+</script>
+
+</html>
